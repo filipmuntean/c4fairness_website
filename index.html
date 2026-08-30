@@ -72,6 +72,7 @@
   th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
   th { font-weight: 600; }
   .table-scroll { overflow-x: auto; }
+  .note { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
 
   footer {
     margin-top: 64px;
@@ -182,15 +183,48 @@ c4fairness-web        # opens http://localhost:7860</code></pre>
 
 <section>
   <h2>Datasets</h2>
-  <p>Two ready-to-audit extracts ship with the repository, each row carrying features, ground truth, and a model's prediction.</p>
+  <p>The package has been evaluated on five public benchmarks spanning classification and regression. Each row of an input CSV is one test-set example, carrying the features, the ground truth, and a model's prediction.</p>
   <div class="table-scroll">
   <table>
-    <tr><th>File</th><th>Task</th><th>Sensitive attributes</th><th>N</th></tr>
-    <tr><td><code>compas_audit.csv</code></td><td>Classification</td><td><code>sex</code>, <code>race</code>, <code>age</code></td><td>5050</td></tr>
-    <tr><td><code>student_grades.csv</code></td><td>Regression</td><td><code>sex_F</code>, <code>Medu</code>, <code>age</code></td><td>670</td></tr>
+    <tr><th>Dataset</th><th>Task</th><th>Sensitive attributes</th><th>N</th><th>Source</th></tr>
+    <tr>
+      <td>COMPAS <span class="note">bundled</span></td>
+      <td>Classification</td>
+      <td><code>sex</code>, <code>race</code>, <code>age</code></td>
+      <td>5050</td>
+      <td><a href="https://github.com/propublica/compas-analysis">ProPublica</a></td>
+    </tr>
+    <tr>
+      <td>Student Performance <span class="note">bundled</span></td>
+      <td>Regression</td>
+      <td><code>sex_F</code>, <code>Medu</code>, <code>age</code></td>
+      <td>670</td>
+      <td><a href="https://archive.ics.uci.edu/dataset/320/student+performance">UCI</a></td>
+    </tr>
+    <tr>
+      <td>Open University (OULAD)</td>
+      <td>Classification</td>
+      <td><code>gender</code>, <code>region</code>, <code>imd_band</code>, <code>disability</code>, <code>age_band</code></td>
+      <td>32593</td>
+      <td><a href="https://archive.ics.uci.edu/dataset/349/open+university+learning+analytics+dataset">UCI</a></td>
+    </tr>
+    <tr>
+      <td>German Credit</td>
+      <td>Classification</td>
+      <td><code>Gender</code>, <code>Age</code>, <code>ForeignWorker</code></td>
+      <td>1000</td>
+      <td><a href="https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data">UCI</a></td>
+    </tr>
+    <tr>
+      <td>Communities &amp; Crime</td>
+      <td>Regression</td>
+      <td><code>racepctblack</code></td>
+      <td>1994</td>
+      <td><a href="https://archive.ics.uci.edu/dataset/183/communities+and+crime">UCI</a></td>
+    </tr>
   </table>
   </div>
-  <p>They derive from <a href="https://github.com/propublica/compas-analysis">ProPublica's COMPAS analysis</a> and the <a href="https://archive.ics.uci.edu/dataset/320/student+performance">UCI Student Performance</a> dataset. The package has also been evaluated on Open University (OULAD), German Credit, and Communities &amp; Crime.</p>
+  <p>The two extracts marked <em>bundled</em> ship with the repository and can be audited as-is. The rest are not redistributed: fetch them from the source and add your model's predictions as a column. Every original carries its own licence and citation requirements — check the source before redistributing.</p>
 </section>
 
 <section>
