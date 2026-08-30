@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>c4fairness — Clustering for Fairness</title>
+<meta name="description" content="c4fairness clusters a model's test set and reports where prediction errors fall unevenly across sensitive groups — without pre-specifying the protected subgroup.">
+<style>
+  :root {
+    --ink: #111;
+    --muted: #555;
+    --rule: #e2e2e2;
+    --code-bg: #f6f6f6;
+    --link: #0b4ea2;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: #fff;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+
+  header { text-align: center; margin-bottom: 56px; }
+  h1 { font-size: 30px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .tagline { font-size: 17px; color: var(--muted); margin: 0 0 24px; }
+  .authors { font-size: 15px; margin: 0 0 4px; }
+  .authors span { white-space: nowrap; }
+  .affil, .contact { font-size: 14px; color: var(--muted); margin: 4px 0 0; }
+  .links { margin-top: 22px; font-size: 15px; }
+  .links a { margin: 0 4px; }
+  .links .sep { color: #bbb; margin: 0 4px; }
+  .soon { color: var(--muted); }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  section { margin-bottom: 48px; }
+  p { margin: 0 0 14px; }
+  p:last-child, ul:last-child { margin-bottom: 0; }
+
+  a { color: var(--link); text-decoration: none; border-bottom: 1px solid rgba(11,78,162,0.25); }
+  a:hover { border-bottom-color: var(--link); }
+
+  ul { margin: 0 0 14px; padding-left: 20px; }
+  li { margin-bottom: 6px; }
+
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; }
+  code { background: var(--code-bg); padding: 1px 4px; border-radius: 3px; }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 0 0 14px;
+  }
+  pre code { background: none; padding: 0; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 0 0 14px; }
+  th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-weight: 600; }
+  .table-scroll { overflow-x: auto; }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 40px 20px 64px; }
+    h1 { font-size: 25px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>c4fairness</h1>
+  <p class="tagline">Clustering for Fairness — find where a model's errors fall unevenly.</p>
+  <p class="authors">
+    <span>Filip Muntean<sup>1</sup></span> &nbsp; <span>Emma Beauxis-Aussalet<sup>1</sup></span>
+  </p>
+  <p class="affil"><sup>1</sup> Vrije Universiteit Amsterdam, in collaboration with the University of Twente</p>
+  <p class="contact">Contact: <a href="mailto:filip.mihai.muntean@gmail.com">filip.mihai.muntean@gmail.com</a>, <a href="mailto:e.m.a.l.beauxisaussalet@vu.nl">e.m.a.l.beauxisaussalet@vu.nl</a></p>
+  <p class="links">
+    <a href="https://pypi.org/project/c4fairness/">PyPI</a><span class="sep">·</span>
+    <a href="https://github.com/emma-ba/Clustering_4_Fairness">GitHub</a><span class="sep">·</span>
+    <a href="https://github.com/emma-ba/Clustering_4_Fairness#readme">Documentation</a><span class="sep">·</span>
+    <span class="soon">Demo (coming soon)</span>
+  </p>
+</header>
+
+<section>
+  <h2>Overview</h2>
+  <p><code>c4fairness</code> is a Python package and command-line tool for auditing machine learning models. It clusters the rows of a model's test set and reports how prediction-error disparities and sensitive-attribute composition vary across the discovered clusters — surfacing under-served subgroups <em>without</em> pre-specifying the protected group.</p>
+  <p>Aggregate accuracy hides localized harm: a model can look fair on average yet fail a specific intersection of groups. Unsupervised clustering of the test set exposes those pockets and quantifies each disparity with a significance test. Binary, multi-class, and regression tasks are all supported.</p>
+</section>
+
+<section>
+  <h2>Install</h2>
+<pre><code>pip install c4fairness              # from PyPI
+pip install "c4fairness[web]"       # + the Gradio web UI
+pip install "c4fairness[r]"         # + exact r×c Fisher via rpy2 (optional)</code></pre>
+  <p>Python 3.10+. The import name is <code>c4fairness</code>; the CLI command is <code>c4fairness</code> (equivalently <code>python -m c4fairness.main</code>). Current release: <a href="https://pypi.org/project/c4fairness/0.1.2">v0.1.2</a>.</p>
+</section>
+
+<section>
+  <h2>Quick start</h2>
+<pre><code>c4fairness --data_path compas_audit.csv \
+    --regular_cols age,priors_count \
+    --sensitive_cols sex,race,age --continuous_sensitive_cols age \
+    --error_col errors --error_type binary \
+    --algorithm kmeans --n_clusters 4 --seed 42</code></pre>
+  <p>Each row of the input CSV is one test-set example: its features, the ground truth, and the model's prediction. The run clusters on <code>age</code>/<code>priors_count</code> plus the sensitive columns, then writes a per-cluster recap and a heatmap showing each cluster's error rate alongside its <code>sex</code>/<code>race</code>/<code>age</code> make-up. String columns are one-hot encoded automatically.</p>
+  <p>On the bundled COMPAS extract, one cluster holds 9.3% of the test set and carries a false-positive rate of 0.85 against 0.34 overall — a gap of +0.54 at p ≈ 0. Its sensitive columns say who is in it: 76% African-American, 91% male, median age 37. A single per-race average would flatten that.</p>
+</section>
+
+<section>
+  <h2>What you get</h2>
+  <p>Every run writes a <strong>detailed</strong> table — one row per cluster — and, in experiment mode, an <strong>overview</strong> table with one row per condition. Both are rendered as heatmaps: blue for cluster size, red for error, violet for sensitive composition, with p-value cells shaded darker the more significant they are.</p>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Column</th><th>Meaning</th></tr>
+    <tr><td><code>count</code> / <code>proportion</code></td><td>Cluster size and share of the test set</td></tr>
+    <tr><td><code>error_value</code></td><td>Cluster error magnitude or rate</td></tr>
+    <tr><td><code>error_gap</code></td><td>Error gap against the rest of the data</td></tr>
+    <tr><td><code>error_sep</code> / <code>error_gap_sig</code></td><td>Omnibus and one-vs-all significance of that gap</td></tr>
+    <tr><td><code>&lt;F&gt;_value</code> / <code>&lt;F&gt;_gap</code></td><td>Sensitive-feature level per cluster, and its gap vs. the rest</td></tr>
+    <tr><td><code>&lt;F&gt;_gap_sig</code></td><td>Significance of the sensitive-composition gap</td></tr>
+    <tr><td><code>silh</code></td><td>Silhouette score of the clustering</td></tr>
+  </table>
+  </div>
+  <p>Alongside the tables and heatmaps, each run saves projection scatter plots (PCA, t-SNE, MDS), per-attribute composition bars, and the CSVs behind every figure.</p>
+</section>
+
+<section>
+  <h2>Experiment mode</h2>
+  <p>A finding should not depend on what you happened to cluster on. <code>--experiment</code> reruns the audit for every combination of the feature groups — regular features (<code>REG</code>), sensitive attributes (<code>SEN</code>), and the error column itself (<code>ERR</code>) — and collects the results in a single overview heatmap, with per-condition p-values Benjamini-Hochberg corrected across sensitive features.</p>
+<pre><code>c4fairness --data_path compas_audit.csv --experiment \
+    --regular_cols age,priors_count --sensitive_cols sex,race \
+    --error_col errors --error_type binary \
+    --algorithm kmeans --n_min 2 --n_max 6 --scoring chi2_error</code></pre>
+</section>
+
+<section>
+  <h2>Web demo</h2>
+  <p><strong>Hosted demo — coming soon.</strong> An interactive version of the app will be published on Hugging Face Spaces: upload a CSV, assign column roles, and read the heatmaps in the browser, with no installation at all.</p>
+  <p>In the meantime the same app runs locally:</p>
+<pre><code>pip install "c4fairness[web]"
+c4fairness-web        # opens http://localhost:7860</code></pre>
+  <p>The web UI wraps the full CLI. Upload a CSV or press <em>Load example dataset</em> to try it on COMPAS; assign column roles, describe how the model's mistakes should be read, pick an algorithm, and run. Results — heatmaps, an overview table, downloadable CSVs — appear in tabs, and the run log streams while the job is in flight. <strong>Single run</strong> audits exactly the configuration on the form; <strong>full sweep</strong> repeats it for every feature-group combination.</p>
+</section>
+
+<section>
+  <h2>What's under the hood</h2>
+  <ul>
+    <li><strong>Algorithms</strong> — k-means, bisecting k-means, k-medoids, k-prototypes, DBSCAN, HDBSCAN.</li>
+    <li><strong>Distances</strong> — Euclidean, Manhattan, and Gower for mixed numeric/categorical data.</li>
+    <li><strong>Choosing k</strong> — automatic selection over a range, scored by silhouette, error separability, sensitive separability, or a weighted composite of the three.</li>
+    <li><strong>Error definitions</strong> — a raw 0/1 column, a confusion-matrix rate (FPR, FNR, precision), a signed regression residual, or a multi-class error typed per class, per confusion cell, or one-hot.</li>
+    <li><strong>Significance</strong> — Fisher, chi-square, Mann-Whitney, ANOVA, and exact r×c Fisher–Freeman–Halton where R is installed, with a scipy fallback when it is not.</li>
+    <li><strong>Preprocessing</strong> — string columns are one-hot encoded automatically and kept out of <code>StandardScaler</code>, so rare categories do not get inflated in the distance computation.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Datasets</h2>
+  <p>Two ready-to-audit extracts ship with the repository, each row carrying features, ground truth, and a model's prediction.</p>
+  <div class="table-scroll">
+  <table>
+    <tr><th>File</th><th>Task</th><th>Sensitive attributes</th><th>N</th></tr>
+    <tr><td><code>compas_audit.csv</code></td><td>Classification</td><td><code>sex</code>, <code>race</code>, <code>age</code></td><td>5050</td></tr>
+    <tr><td><code>student_grades.csv</code></td><td>Regression</td><td><code>sex_F</code>, <code>Medu</code>, <code>age</code></td><td>670</td></tr>
+  </table>
+  </div>
+  <p>They derive from <a href="https://github.com/propublica/compas-analysis">ProPublica's COMPAS analysis</a> and the <a href="https://archive.ics.uci.edu/dataset/320/student+performance">UCI Student Performance</a> dataset. The package has also been evaluated on Open University (OULAD), German Credit, and Communities &amp; Crime.</p>
+</section>
+
+<section>
+  <h2>Links</h2>
+  <ul>
+    <li>Package — <a href="https://pypi.org/project/c4fairness/">pypi.org/project/c4fairness</a></li>
+    <li>Source and documentation — <a href="https://github.com/emma-ba/Clustering_4_Fairness">github.com/emma-ba/Clustering_4_Fairness</a></li>
+    <li>Worked notebooks — <code>docs/example_binary.ipynb</code>, <code>docs/example_regression.ipynb</code></li>
+    <li>Hosted demo — coming soon</li>
+  </ul>
+</section>
+
+<footer>
+  Made at Vrije Universiteit Amsterdam, in collaboration with the University of Twente.
+</footer>
+
+</div>
+</body>
+</html>
